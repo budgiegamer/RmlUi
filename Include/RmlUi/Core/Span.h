@@ -7,12 +7,20 @@
 
 namespace Rml {
 
+template<typename T>
+struct ISpan
+{
+	virtual T* data() const = 0;
+	virtual size_t size() const = 0;
+	virtual bool empty() const = 0;
+};
+
 /**
     Basic implementation of a span, which refers to a contiguous sequence of objects.
  */
 
 template <typename T>
-class Span {
+class Span : public ISpan{
 public:
 	Span() = default;
 	Span(T* data, size_t size) : m_data(data), m_size(size) { RMLUI_ASSERT(data != nullptr || size == 0); }
@@ -26,9 +34,9 @@ public:
 		return m_data[index];
 	}
 
-	T* data() const { return m_data; }
-	size_t size() const { return m_size; }
-	bool empty() const { return m_size == 0; }
+	T* data() const override { return m_data; }
+	size_t size() const override { return m_size; }
+	bool empty() const override { return m_size == 0; }
 
 	T* begin() const { return m_data; }
 	T* end() const { return m_data + m_size; }

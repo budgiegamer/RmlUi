@@ -81,6 +81,9 @@ RMLUICORE_API TextInputHandler* GetTextInputHandler();
 /// @return A non-owning pointer to the new context, or nullptr if the context could not be created.
 RMLUICORE_API Context* CreateContext(const String& name, Vector2i dimensions, RenderInterface* render_interface = nullptr,
 	TextInputHandler* text_input_handler = nullptr);
+// Odin compatabillity
+extern "C" RMLUICORE_API Context* CreateContext(const char* name, Vector2i dimensions, RenderInterface* render_interface = nullptr,
+	TextInputHandler* text_input_handler = nullptr);
 /// Removes and destroys a context.
 /// @param[in] name The name of the context to remove.
 /// @return True if the name is a valid context, false otherwise.

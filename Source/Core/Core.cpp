@@ -255,6 +255,12 @@ TextInputHandler* GetTextInputHandler()
 	return text_input_handler;
 }
 
+Context* CreateContext(const char* name, const Vector2i dimensions, RenderInterface* render_interface_for_context,
+	TextInputHandler* text_input_handler_for_context)
+{
+	return CreateContext(std::string(name), dimensions, render_interface_for_context, text_input_handler_for_context);
+}
+
 Context* CreateContext(const String& name, const Vector2i dimensions, RenderInterface* render_interface_for_context,
 	TextInputHandler* text_input_handler_for_context)
 {

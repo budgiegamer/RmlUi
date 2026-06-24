@@ -7,11 +7,13 @@
 #include <stddef.h>
 #include <stdint.h>
 
+using ScriptObject = void*;
+
 namespace Rml {
 
 // Commonly used basic types
 using byte = unsigned char;
-using ScriptObject = void*;
+using ScriptObject = ScriptObject;
 
 enum class Character : char32_t { Null, Replacement = 0xfffd }; // Unicode code point
 enum class BoxArea { Margin, Border, Padding, Content, Auto };
