@@ -346,6 +346,12 @@ bool LoadFontFace(const String& file_path, bool fallback_face, Style::FontWeight
 	return font_interface->LoadFontFace(file_path, face_index, fallback_face, weight);
 }
 
+// Odin compatabillity
+bool LoadFontFace(const char* file_path, bool fallback_face, Style::FontWeight weight, int face_index)
+{
+	return LoadFontFace(std::string(file_path), fallback_face, weight, face_index);
+}
+
 bool LoadFontFace(const String& file_path, const String& family, Style::FontStyle style, Style::FontWeight weight, bool fallback_face, int face_index)
 {
 	return font_interface->LoadFontFace(file_path, face_index, family, style, weight, fallback_face);

@@ -31,11 +31,18 @@ enum class ScrollFlag {
 	Auto, // Scroll the focused element into view, if applicable.
 };
 
+// Odin compatabillity
+struct RMLUICORE_API IElementDocument 
+{
+	virtual void Show(ModalFlag modal_flag = ModalFlag::None, FocusFlag focus_flag = FocusFlag::Auto, ScrollFlag scroll_flag = ScrollFlag::Auto) = 0;
+	virtual void Hide() = 0;
+};
+
 /**
     Represents a document in the dom tree.
  */
 
-class RMLUICORE_API ElementDocument : public Element {
+class RMLUICORE_API ElementDocument : public IElementDocument, public Element {
 public:
 	RMLUI_RTTI_DefineWithParent(ElementDocument, Element)
 
@@ -78,9 +85,9 @@ public:
 	/// @param[in] modal_flag Flag controlling the modal state of the document, see the 'ModalFlag' description for details.
 	/// @param[in] focus_flag Flag controlling the focus, see the 'FocusFlag' description for details.
 	/// @param[in] scroll_flag Flag controlling scrolling, see the 'ScrollFlag' description for details.
-	void Show(ModalFlag modal_flag = ModalFlag::None, FocusFlag focus_flag = FocusFlag::Auto, ScrollFlag scroll_flag = ScrollFlag::Auto);
+	void Show(ModalFlag modal_flag = ModalFlag::None, FocusFlag focus_flag = FocusFlag::Auto, ScrollFlag scroll_flag = ScrollFlag::Auto) override;
 	/// Hide the document.
-	void Hide();
+	void Hide() override;
 	/// Close the document.
 	/// @note The destruction of the document is deferred until the next call to Context::Update().
 	void Close();

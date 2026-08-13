@@ -5,11 +5,12 @@
 
 namespace Rml {
 
+// Odin compatabillity
 struct  IVertex
 {
-	virtual float* getPos() = 0;
+	virtual void getPos(float* pos) = 0;
 	//virtual void setPos(float x, float y) = 0;
-	virtual float* getTexcord() = 0;
+	virtual void getTexcord(float* pos) = 0;
 	//virtual void setTexcord(float x, float y) = 0;
 };
 
@@ -31,20 +32,24 @@ struct RMLUICORE_API Vertex : IVertex {
 	}
 	friend bool operator!=(const Vertex& lhs, const Vertex& rhs) { return !(lhs == rhs); }
 
-	virtual float* getPos() override
+	virtual void getPos(float* pos) override
 	{
-		float pos[2] = {position.x, position.y};
-		return &pos[0];
+		//float* pos = new float[2];//{position.x, position.y};
+		pos[0] = position.x;
+		pos[1] = position.y;
+		//return &pos[0];
 	}
 	/*virtual void setPos(float x, float y) override
 	{
 		position.x = x;
 		position.y = y;
 	}*/
-	virtual float* getTexcord() override
+	virtual void getTexcord(float* pos) override
 	{
-		float pos[2] = {tex_coord.x, tex_coord.y};
-		return &pos[0];
+		//float* pos = new float[2];
+		pos[0] = tex_coord.x;
+		pos[1] = tex_coord.y;
+		//return &pos[0];
 	}
 	/*virtual void setTexcord(float x, float y) override
 	{

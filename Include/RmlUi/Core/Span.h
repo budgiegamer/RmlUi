@@ -7,10 +7,11 @@
 
 namespace Rml {
 
+// Odin compatabillity
 template<typename T>
 struct ISpan
 {
-	virtual T* data() const = 0;
+	virtual T* get(size_t i) const = 0;
 	virtual size_t size() const = 0;
 	virtual bool empty() const = 0;
 };
@@ -20,7 +21,8 @@ struct ISpan
  */
 
 template <typename T>
-class Span : public ISpan{
+class Span : public ISpan<T> 
+{
 public:
 	Span() = default;
 	Span(T* data, size_t size) : m_data(data), m_size(size) { RMLUI_ASSERT(data != nullptr || size == 0); }
@@ -33,9 +35,10 @@ public:
 		RMLUI_ASSERT(index < m_size);
 		return m_data[index];
 	}
-
-	T* data() const override { return m_data; }
+	T* data() const { return m_data; }
+	T* get(size_t i) const override { return &m_data[i]; }
 	size_t size() const override { return m_size; }
+	//virtual size_t itemSize() const override { return sizeof(T); }
 	bool empty() const override { return m_size == 0; }
 
 	T* begin() const { return m_data; }

@@ -21,11 +21,25 @@ class RenderManager;
 class TextInputHandler;
 enum class EventId : uint16_t;
 
+// Odin compatabillity
+struct IContext 
+{
+	virtual ElementDocument* CreateDocument(const char* instancer_name) = 0;
+	virtual ElementDocument* LoadDocument(const char* document_path) = 0;
+	virtual void SetDimensions(Vector2i dimensions) = 0;
+	virtual Vector2i GetDimensions() const = 0;
+	virtual bool Update() = 0;
+	virtual bool Render() = 0;
+	virtual void UnloadDocument(ElementDocument* document) = 0;
+	virtual void UnloadAllDocuments() = 0;
+};
+
 /**
     A context for storing, rendering, and processing RML documents. Multiple contexts can exist simultaneously.
  */
 
-class RMLUICORE_API Context : public ScriptInterface {
+class RMLUICORE_API Context : public IContext, public ScriptInterface 
+{
 public:
 	/// Constructs a new, uninitialised context. This should not be called directly, use CreateContext() instead.
 	/// @param[in] name The name of the context.
@@ -41,10 +55,10 @@ public:
 
 	/// Changes the dimensions of the context.
 	/// @param[in] dimensions The new dimensions of the context.
-	void SetDimensions(Vector2i dimensions);
+	void SetDimensions(Vector2i dimensions) override;
 	/// Returns the dimensions of the context.
 	/// @return The current dimensions of the context.
-	Vector2i GetDimensions() const;
+	Vector2i GetDimensions() const override;
 
 	/// Changes the ratio of the 'dp' unit to the 'px' unit.
 	/// @param[in] dp_ratio The new density-independent pixel ratio of the context.
@@ -55,28 +69,47 @@ public:
 
 	/// Updates all elements in the context's documents.
 	/// This must be called before Context::Render, but after any elements have been changed, added, or removed.
-	bool Update();
+	bool Update() override;
 	/// Renders all visible elements in the context's documents.
-	bool Render();
+	bool Render() override;
 
 	/// Creates a new, empty document and places it into this context.
 	/// @param[in] instancer_name The name of the instancer used to create the document.
 	/// @return The new document, or nullptr if no document could be created.
 	ElementDocument* CreateDocument(const String& instancer_name = "body");
+	// Odin compatabillity
+	ElementDocument* CreateDocument(const char* instancer_name) override
+	{
+		if (instancer_name != nullptr)
+			return CreateDocument(std::string(instancer_name));
+		else
+			return CreateDocument();
+	}
 	/// Load a document into the context.
 	/// @param[in] document_path The path to the document to load. The path is passed directly to the file interface which is used to load the file.
 	/// The default file interface accepts both absolute paths and paths relative to the working directory.
 	/// @return The loaded document, or nullptr if no document was loaded.
 	ElementDocument* LoadDocument(const String& document_path);
+	// Odin compatabillity
+	ElementDocument* LoadDocument(const char* document_path) override
+	{
+		return LoadDocument(std::string(document_path));
+	}
 	/// Load a document into the context.
 	/// @param[in] document_stream The opened stream, ready to read.
 	/// @return The loaded document, or nullptr if no document was loaded.
 	ElementDocument* LoadDocument(Stream* document_stream);
+
 	/// Load a document into the context.
 	/// @param[in] document_rml The string containing the document RML.
 	/// @param[in] source_url Optional string used to set the document's source URL, or naming the document for log messages.
 	/// @return The loaded document, or nullptr if no document was loaded.
 	ElementDocument* LoadDocumentFromMemory(const String& document_rml, const String& source_url = "[document from memory]");
+	// Odin compatabillity
+	ElementDocument* LoadDocumentFromMemory(const char* document_rml, const char* source_url = "[document from memory]")
+	{
+		return LoadDocumentFromMemory(std::string(document_rml), std::string(source_url));
+	}
 	/// Unload the given document.
 	/// @param[in] document The document to unload.
 	/// @note The destruction of the document is deferred until the next call to Context::Update().

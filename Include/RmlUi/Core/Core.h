@@ -21,9 +21,9 @@ enum class DefaultActionPhase;
  */
 
 /// Initialises RmlUi.
-RMLUICORE_API bool Initialise();
+extern "C"  RMLUICORE_API bool Initialise();
 /// Shutdown RmlUi.
-RMLUICORE_API void Shutdown();
+extern "C" RMLUICORE_API void Shutdown();
 
 /// Returns the version of this RmlUi library.
 /// @return The version number.
@@ -42,9 +42,9 @@ RMLUICORE_API SystemInterface* GetSystemInterface();
 /// interface when created.
 /// @param[in] render_interface A non-owning pointer to the render interface implementation.
 /// @lifetime The interface must be kept alive until after the call to Rml::Shutdown.
-RMLUICORE_API void SetRenderInterface(RenderInterface* render_interface);
+extern "C" RMLUICORE_API void SetRenderInterface(RenderInterface* render_interface);
 /// Returns RmlUi's default's render interface.
-RMLUICORE_API RenderInterface* GetRenderInterface();
+extern "C" RMLUICORE_API RenderInterface* GetRenderInterface();
 
 /// Sets the interface through which all file I/O requests are made. This is not required to be called, but if it is, it
 /// must be called before Initialise().
@@ -110,6 +110,8 @@ RMLUICORE_API int GetNumContexts();
 /// @return True if the face was loaded successfully, false otherwise.
 RMLUICORE_API bool LoadFontFace(const String& file_path, bool fallback_face = false, Style::FontWeight weight = Style::FontWeight::Auto,
 	int face_index = 0);
+ 
+extern "C" RMLUICORE_API bool LoadFontFace(const char* file_path, bool fallback_face = false, Style::FontWeight weight = Style::FontWeight::Auto,int face_index = 0);
 
 /// Adds a new font face from file to the font engine. The face's family, style, and weight are given by the parameters.
 /// @param[in] data The font data.
