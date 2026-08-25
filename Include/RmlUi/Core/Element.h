@@ -440,12 +440,21 @@ public:
 	/// Gets the markup and content of the element.
 	/// @param[out] content The content of the element.
 	virtual void GetInnerRML(String& content) const;
+	virtual void GetInnerRML(const char* content) const
+	{
+		content = GetInnerRML().c_str();
+	};
 	/// Gets the markup and content of the element.
 	/// @return The content of the element.
 	String GetInnerRML() const;
 	/// Sets the markup and content of the element. All existing children will be replaced.
 	/// @param[in] rml The new content of the element.
 	virtual void SetInnerRML(const String& rml);
+	virtual void SetInnerRML(const char* rml)
+	{
+		SetInnerRML(Rml::String(rml));
+	};
+
 
 	//@}
 
@@ -529,6 +538,10 @@ public:
 	/// @param[in] id The ID of the child element.
 	/// @return The child of this element with the given ID, or nullptr if no such child exists.
 	Element* GetElementById(const String& id);
+	/*virtual Element* GetElementById(const char* id)
+	{
+		return GetElementById(Rml::String(id));
+	};*/
 	/// Get all descendant elements with the given tag.
 	/// @param[out] elements Resulting elements.
 	/// @param[in] tag Tag to search for.

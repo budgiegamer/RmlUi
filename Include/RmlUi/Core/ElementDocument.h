@@ -36,6 +36,7 @@ struct RMLUICORE_API IElementDocument
 {
 	virtual void Show(ModalFlag modal_flag = ModalFlag::None, FocusFlag focus_flag = FocusFlag::Auto, ScrollFlag scroll_flag = ScrollFlag::Auto) = 0;
 	virtual void Hide() = 0;
+	virtual Element* GetElementbyId(const char* id) = 0;
 };
 
 /**
@@ -95,6 +96,12 @@ public:
 	/// Creates the named element.
 	/// @param[in] name The tag name of the element.
 	ElementPtr CreateElement(const String& name);
+
+	Element* GetElementbyId(const char* id) override
+	{
+		return Element::GetElementById(Rml::String(id));
+	};
+
 	/// Create a text element with the given text content.
 	/// @param[in] text The text content of the text element.
 	ElementPtr CreateTextNode(const String& text);

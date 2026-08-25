@@ -10,6 +10,7 @@ struct  IVertex
 {
 	virtual void getPos(float* pos) = 0;
 	//virtual void setPos(float x, float y) = 0;
+	virtual void getColor(byte* color) = 0;
 	virtual void getTexcord(float* pos) = 0;
 	//virtual void setTexcord(float x, float y) = 0;
 };
@@ -34,28 +35,21 @@ struct RMLUICORE_API Vertex : IVertex {
 
 	virtual void getPos(float* pos) override
 	{
-		//float* pos = new float[2];//{position.x, position.y};
 		pos[0] = position.x;
 		pos[1] = position.y;
-		//return &pos[0];
 	}
-	/*virtual void setPos(float x, float y) override
+	virtual void getColor(byte* color) override
 	{
-		position.x = x;
-		position.y = y;
-	}*/
+		color[0] = colour.red;
+		color[1] = colour.green;
+		color[2] = colour.blue;
+		color[3] = colour.alpha;
+	}
 	virtual void getTexcord(float* pos) override
 	{
-		//float* pos = new float[2];
 		pos[0] = tex_coord.x;
 		pos[1] = tex_coord.y;
-		//return &pos[0];
 	}
-	/*virtual void setTexcord(float x, float y) override
-	{
-		tex_coord.x = x;
-		tex_coord.y = y;
-	}*/
 };
 
 } // namespace Rml
