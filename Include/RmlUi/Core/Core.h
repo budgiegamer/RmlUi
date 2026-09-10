@@ -33,9 +33,9 @@ RMLUICORE_API String GetVersion();
 /// must be called before Initialise().
 /// @param[in] system_interface A non-owning pointer to the application-specified logging interface.
 /// @lifetime The interface must be kept alive until after the call to Rml::Shutdown.
-RMLUICORE_API void SetSystemInterface(SystemInterface* system_interface);
+extern "C" RMLUICORE_API void SetSystemInterface(SystemInterface* system_interface);
 /// Returns RmlUi's system interface.
-RMLUICORE_API SystemInterface* GetSystemInterface();
+extern "C" RMLUICORE_API SystemInterface* GetSystemInterface();
 
 /// Sets the interface through which all rendering requests are made. This is not required to be called, but if it is,
 /// it must be called before Initialise(). If no render interface is specified, then all contexts must specify a render
