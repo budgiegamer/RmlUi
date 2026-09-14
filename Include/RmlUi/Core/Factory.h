@@ -188,4 +188,9 @@ private:
 	~Factory();
 };
 
+//extern "C"
+//{
+	//extern "C" void FactoryRegisterEventListenerInstancer(EventInstancer* instancer);
+//}
+
 } // namespace Rml

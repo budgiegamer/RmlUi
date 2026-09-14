@@ -540,7 +540,7 @@ EventPtr Factory::InstanceEvent(Element* target, EventId id, const String& type,
 {
 	EventPtr event = event_instancer->InstanceEvent(target, id, type, parameters, interruptible);
 	if (event)
-		event->instancer = event_instancer;
+	event->instancer = event_instancer;
 	return event;
 }
 
@@ -548,6 +548,11 @@ void Factory::RegisterEventListenerInstancer(EventListenerInstancer* instancer)
 {
 	event_listener_instancer = instancer;
 }
+
+extern "C" void FactoryRegisterEventListenerInstancer(EventListenerInstancer* instancer)
+{
+	Factory::RegisterEventListenerInstancer(instancer);
+};
 
 EventListener* Factory::InstanceEventListener(const String& value, Element* element)
 {

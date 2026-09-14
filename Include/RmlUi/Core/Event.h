@@ -15,12 +15,32 @@ struct EventSpecification;
 enum class EventPhase { None, Capture = 1, Target = 2, Bubble = 4 };
 enum class DefaultActionPhase { None, Target = (int)EventPhase::Target, TargetAndBubble = ((int)Target | (int)EventPhase::Bubble) };
 
-/**
+struct IEvent
+{
+	virtual EventPhase GetPhase() const = 0;
+	virtual void SetPhase(EventPhase phase) = 0;
+	virtual void SetCurrentElement(Element* element) = 0;
+	virtual Element* GetCurrentElement() const = 0;
+	virtual Element* GetTargetElement() const = 0;
+	virtual const String& GetType() const = 0;
+	virtual EventId GetId() const = 0;
+	virtual void StopPropagation() = 0;
+	virtual void StopImmediatePropagation() = 0;
+	virtual bool IsInterruptible() const = 0;
+	virtual bool IsPropagating() const = 0;
+	virtual bool IsImmediatePropagating() const = 0;
+	virtual bool GetBoolParamater(const char* key, bool def = false) = 0;
+	virtual int GetIntParamater(const char* key, int def = 0) = 0;
+	virtual float GetFloatParamater(const char* key, float def = 0.0) = 0;
+	virtual const char* GetStringParamater(const char* key, const char* def = "") = 0;
+};
+
+/*
     An event that propagates through the element hierarchy. Events follow the DOM3 event specification. See
     http://www.w3.org/TR/DOM-Level-3-Events/events.html.
- */
+*/
 
-class RMLUICORE_API Event : public ScriptInterface {
+class RMLUICORE_API Event : public IEvent, public ScriptInterface {
 public:
 	/// Constructor
 	Event();
@@ -35,33 +55,33 @@ public:
 	virtual ~Event();
 
 	/// Get the current propagation phase.
-	EventPhase GetPhase() const;
+	EventPhase GetPhase() const override;
 	/// Set the current propagation phase
-	void SetPhase(EventPhase phase);
+	void SetPhase(EventPhase phase) override;
 
 	/// Set the current element in the propagation.
-	void SetCurrentElement(Element* element);
+	void SetCurrentElement(Element* element) override;
 	/// Get the current element in the propagation.
-	Element* GetCurrentElement() const;
+	Element* GetCurrentElement() const override;
 	/// Get the target element of this event.
-	Element* GetTargetElement() const;
+	Element* GetTargetElement() const override;
 
 	/// Get the event type.
-	const String& GetType() const;
+	const String& GetType() const override;
 	/// Get the event id.
-	EventId GetId() const;
+	EventId GetId() const override;
 
 	/// Stops propagation of the event if it is interruptible, but finish all listeners on the current element.
-	void StopPropagation();
+	void StopPropagation() override;
 	/// Stops propagation of the event if it is interruptible, including to any other listeners on the current element.
-	void StopImmediatePropagation();
+	void StopImmediatePropagation() override;
 
 	/// Returns true if the event can be interrupted, that is, stopped from propagating.
-	bool IsInterruptible() const;
+	bool IsInterruptible() const override;
 	/// Returns true if the event is still propagating.
-	bool IsPropagating() const;
+	bool IsPropagating() const override;
 	/// Returns true if the event is still immediate propagating.
-	bool IsImmediatePropagating() const;
+	bool IsImmediatePropagating() const override;
 
 	/// Checks if the event is of a certain type.
 	/// @param type The name of the type to check for.
@@ -75,10 +95,27 @@ public:
 	/// @param default_value[in] The default value.
 	/// @return The value of the requested parameter, or the default value if the key does not exist.
 	template <typename T>
-	T GetParameter(const String& key, const T& default_value) const
+	T GetParameter(const String& key, const T& default_value = T()) const
 	{
 		return Get(parameters, key, default_value);
 	}
+	bool GetBoolParamater(const char* key, bool def = false) override
+	{
+		return Get(parameters, key, def);
+	};
+	int GetIntParamater(const char* key, int def = 0) override
+	{
+		return Get(parameters, key, def);
+	};
+	float GetFloatParamater(const char* key, float def = 0.0) override
+	{
+		return Get(parameters, key, def);
+	};
+	const char* GetStringParamater(const char* key, const char* def = "") override
+	{
+		return Get(parameters, key, String(def)).c_str();
+	};
+
 	/// Access the dictionary of parameters
 	/// @return The dictionary of parameters
 	const Dictionary& GetParameters() const;
