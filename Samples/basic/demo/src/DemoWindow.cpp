@@ -27,6 +27,10 @@ bool DemoWindow::Initialize(const Rml::String& title, Rml::Context* context)
 {
 	using namespace Rml;
 
+	Log::Message(Log::LT_ALWAYS, "%li", sizeof(TransformPrimitive));
+	Log::Message(Log::LT_ALWAYS, "%li", sizeof(Property));	
+	Log::Message(Log::LT_ALWAYS, "%li", sizeof(Tween));
+
 	document = context->LoadDocument("basic/demo/data/demo.rml");
 	if (!document)
 		return false;

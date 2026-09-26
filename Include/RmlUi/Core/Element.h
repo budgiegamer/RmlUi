@@ -48,7 +48,22 @@ struct IElement
 {
 	virtual void GetInnerRML(const char* content) const = 0;
 	virtual void SetInnerRML(const char* rml) = 0;
+	virtual bool SetProperty(const char* name, const char* value) = 0;
+	virtual bool SetProperty(PropertyId id, const Property& property) = 0;
 	virtual Element* GetElementById(const char* id) = 0;
+	virtual Element* GetFirstChild() const = 0;
+	virtual Element* GetLastChild() const = 0;
+	virtual Element* GetChild(int index) const = 0;
+	virtual int GetNumChildren(bool include_non_dom_elements = false) const = 0;
+	virtual Vector2f GetAbsoluteOffset(BoxArea area = BoxArea::Content) = 0;
+	virtual float GetAbsoluteLeft() = 0;
+	virtual float GetAbsoluteTop() = 0;
+	virtual float GetClientLeft() = 0;
+	virtual float GetClientTop() = 0;
+	virtual float GetClientWidth() = 0;
+	virtual float GetClientHeight() = 0;
+	virtual bool Animate(const char* property_name, const Property& target_value, float duration, Tween tween = Tween{}, int num_iterations = 1,
+		bool alternate_direction = true, float delay = 0.0f, const Property* start_value = nullptr) = 0;
 };
 
 class RMLUICORE_API Element : public IElement, public ScriptInterface, public EnableObserverPtr<Element> {
@@ -182,11 +197,15 @@ public:
 	/// @param[in] value The new property to set.
 	/// @return True if the property parsed successfully, false otherwise.
 	bool SetProperty(const String& name, const String& value);
+	bool SetProperty(const char* name, const char* value) override
+	{
+		return SetProperty(String(name), String(value));
+	};
 	/// Sets a local property override on the element to a pre-parsed value.
 	/// @param[in] id The id of the new property.
 	/// @param[in] property The parsed property to set.
 	/// @return True if the property was set successfully, false otherwise.
-	bool SetProperty(PropertyId id, const Property& property);
+	bool SetProperty(PropertyId id, const Property& property) override;
 	/// Removes a local property override on the element; its value will revert to that defined in the style sheet.
 	/// @param[in] name The name of the local property definition to remove.
 	void RemoveProperty(const String& name);
@@ -248,7 +267,13 @@ public:
 	/// @return True if a new animation was added.
 	bool Animate(const String& property_name, const Property& target_value, float duration, Tween tween = Tween{}, int num_iterations = 1,
 		bool alternate_direction = true, float delay = 0.0f, const Property* start_value = nullptr);
-	bool Animate(PropertyId id, const Property& target_value, float duration, Tween tween = Tween{}, int num_iterations = 1,
+	bool Animate(const char* property_name, const Property& target_value, float duration, Tween tween = Tween{}, int num_iterations = 1,
+		bool alternate_direction = true, float delay = 0.0f, const Property* start_value = nullptr) override
+		{
+			return Animate(String(property_name), target_value, duration, tween, num_iterations, alternate_direction, delay, start_value);
+		};
+
+	bool Animate(PropertyId id, const Property& target_value, float duration, Tween tween = Tween{}, int num_iterations = 1, 
 		bool alternate_direction = true, float delay = 0.0f, const Property* start_value = nullptr);
 
 	/// Add a key to an animation, extending its duration.
@@ -349,25 +374,25 @@ public:
 
 	/// Gets the horizontal offset from the context's left edge to the element's left border edge.
 	/// @return The horizontal offset of the element within its context, in pixels.
-	float GetAbsoluteLeft();
+	float GetAbsoluteLeft() override;
 	/// Gets the vertical offset from the context's top edge to the element's top border edge.
 	/// @return The vertical offset of the element within its context, in pixels.
-	float GetAbsoluteTop();
+	float GetAbsoluteTop() override;
 
 	/// Gets the horizontal offset from the element's left border edge to the left edge of its client area. This is
 	/// effectively equivalent to the left border width.
 	/// @return The horizontal offset of the element's client area, in pixels.
-	float GetClientLeft();
+	float GetClientLeft() override;
 	/// Gets the vertical offset from the element's top border edge to the top edge of its client area. This is
 	/// effectively equivalent to the top border width.
 	/// @return The vertical offset of the element's client area, in pixels.
-	float GetClientTop();
+	float GetClientTop() override;
 	/// Gets the width of the element's client area. This is the padding area subtracted by the vertical scrollbar width if present.
 	/// @return The element's client width, in pixels.
-	float GetClientWidth();
+	float GetClientWidth() override;
 	/// Gets the height of the element's client area. This is the padding area subtracted by the horizontal scrollbar height if present.
 	/// @return The element's client height, in pixels.
-	float GetClientHeight();
+	float GetClientHeight() override;
 
 	/// Returns the element from which all offset calculations are currently computed.
 	/// @return This element's offset parent.
@@ -430,19 +455,19 @@ public:
 
 	/// Returns the first child of this element.
 	/// @return This element's first child, or nullptr if it contains no children.
-	Element* GetFirstChild() const;
+	Element* GetFirstChild() const override;
 	/// Gets the last child of this element.
 	/// @return This element's last child, or nullptr if it contains no children.
-	Element* GetLastChild() const;
+	Element* GetLastChild() const override;
 	/// Get the child element at the given index.
 	/// @param[in] index Index of child to get.
 	/// @return The child element at the given index.
-	Element* GetChild(int index) const;
+	Element* GetChild(int index) const override;
 	/// Get the current number of children in this element
 	/// @param[in] include_non_dom_elements True if the caller wants to include the non-DOM children. Only set this to true if you know what you're
 	/// doing!
 	/// @return The number of children.
-	int GetNumChildren(bool include_non_dom_elements = false) const;
+	int GetNumChildren(bool include_non_dom_elements = false) const override;
 
 	/// Gets the markup and content of the element.
 	/// @param[out] content The content of the element.

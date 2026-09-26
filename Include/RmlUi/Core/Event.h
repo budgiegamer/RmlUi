@@ -32,7 +32,11 @@ struct IEvent
 	virtual bool GetBoolParamater(const char* key, bool def = false) = 0;
 	virtual int GetIntParamater(const char* key, int def = 0) = 0;
 	virtual float GetFloatParamater(const char* key, float def = 0.0) = 0;
-	virtual const char* GetStringParamater(const char* key, const char* def = "") = 0;
+	virtual bool GetStringParamater(const char* key, char* str) = 0;
+	//virtual const char* GetStringParamaterUnsafe(const char* key, const char* def = "") = 0;
+	virtual size_t GetStringParamLen(const char* key, const char* def = "") = 0;
+	virtual const char* GetKey(size_t i) = 0;
+	virtual size_t GetParamCount() = 0;
 };
 
 /*
@@ -111,14 +115,49 @@ public:
 	{
 		return Get(parameters, key, def);
 	};
-	const char* GetStringParamater(const char* key, const char* def = "") override
+	bool GetStringParamater(const char* key, char* str) override
 	{
-		return Get(parameters, key, String(def)).c_str();
+		auto sstr = Get(parameters, key, String(str));
+
+		std::strcpy(str, sstr.c_str());
+
+		return true;
+	};
+	/*const char* GetStringParamaterUnsafe(const char* key, const char* def = "") override
+	{
+		auto sstr = Get(parameters, key, String(def));
+		//auto cstr = sstr.c_str();
+		return sstr.c_str();
+	};*/
+	size_t GetStringParamLen(const char* key, const char* def = "") override
+	{
+		auto str = Get(parameters, key, String(def));
+		if (str == def)
+			return 0;
+		return str.size() + 1;
 	};
 
 	/// Access the dictionary of parameters
 	/// @return The dictionary of parameters
 	const Dictionary& GetParameters() const;
+
+	const char* GetKey(size_t i) override
+	{
+		size_t cur_index = 0;
+		for(auto& s : parameters)
+		{
+			if (cur_index == i)
+				if (!s.first.empty())
+					return s.first.c_str();
+			cur_index++;
+		}
+		return nullptr;
+	};
+
+	size_t GetParamCount() override
+	{
+		return parameters.size();
+	}
 
 	/// Return the unprojected mouse screen position.
 	/// Note: Only specified for events with 'mouse_x' and 'mouse_y' parameters.

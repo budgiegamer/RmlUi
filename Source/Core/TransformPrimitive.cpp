@@ -87,8 +87,18 @@ namespace Transforms {
 	TranslateZ::TranslateZ(const NumericValue* values) noexcept : UnresolvedPrimitive(values) {}
 	TranslateZ::TranslateZ(float z, Unit unit) noexcept : UnresolvedPrimitive({NumericValue(z, unit)}) {}
 
+	extern "C" RMLUICORE_API TransformPrimitive Transforms_CreateTranslate2D(float x, float y, Unit units = Unit::PX)
+	{
+		return TransformPrimitive(Rml::Transforms::Translate2D(x, y, units));
+	};
+
 	Translate2D::Translate2D(const NumericValue* values) noexcept : UnresolvedPrimitive(values) {}
 	Translate2D::Translate2D(float x, float y, Unit units) noexcept : UnresolvedPrimitive({NumericValue(x, units), NumericValue(y, units)}) {}
+
+	extern "C" RMLUICORE_API TransformPrimitive Transforms_CreateTranslate3D(float x, float y, float z, Unit units = Unit::PX)
+	{
+		return TransformPrimitive(Rml::Transforms::Translate3D(x, y, z, units));
+	};
 
 	Translate3D::Translate3D(const NumericValue* values) noexcept : UnresolvedPrimitive(values) {}
 	Translate3D::Translate3D(NumericValue x, NumericValue y, NumericValue z) noexcept : UnresolvedPrimitive({x, y, z}) {}

@@ -3,6 +3,14 @@
 
 namespace Rml {
 
+extern "C"
+{
+	RMLUICORE_API Property Colorb_MakeProperty(Rml::Colourb val, Rml::Unit unit)
+	{
+		return Property(val, unit);
+	}
+}
+
 Property::Property() : unit(Unit::UNKNOWN), specificity(-1)
 {
 	definition = nullptr;
